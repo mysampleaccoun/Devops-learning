@@ -5,15 +5,31 @@ pipeline {
     stages {
 
         stage('Build Docker Image') {
-
             steps {
-
-                sh 'docker build -t test-jenkins ./jenkins'
-
+                dir('jenkins') {
+                    sh 'docker build -t jenkins-demo .'
+                }
             }
-
         }
 
-    }
+        stage('Push to ECR') {
+            steps {
 
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                     credentialsId: 'aws-ecr']
+                ]) {
+
+                    sh '''
+                        aws ecr get-login-password --region ap-south-1 | \
+                        docker login --username AWS --password-stdin 683354427061.dkr.ecr.ap-south-1.amazonaws.com/jenkins/docker_basic
+
+                        docker tag jenkins-demo:latest 683354427061.dkr.ecr.ap-south-1.amazonaws.com/jenkins/docker_basic:latest
+
+                        docker push 683354427061.dkr.ecr.ap-south-1.amazonaws.com/jenkins/docker_basic:latest
+                    '''
+                }
+            }
+        }
+    }
 }
