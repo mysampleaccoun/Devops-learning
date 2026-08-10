@@ -4,6 +4,12 @@ pipeline {
     agent any
 
     stages {
+         stage('Test Shared Library') {
+            steps {
+                sayHello()
+            }
+        }
+
 
         stage('Build Docker Image') {
             steps {
