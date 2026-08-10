@@ -4,16 +4,13 @@ pipeline {
 
     stages {
 
-        stage('Build Docker Image') {
-
-            steps {
-
-                sh 'docker build -t test-jenkins ./jenkins'
-
-            }
-
+      stage('Feature Branch Test') {
+    steps {
+        echo 'This pipeline is running from feature/docker-test'
+    }
+}
         }
 
     }
 
-}
+
